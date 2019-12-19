@@ -13,7 +13,7 @@ public class DBManager {
     private static DBManager mInstance;
 
     private Connection connection;
-    private File config = new File("C://Users/user/Desktop/ITTalents/Projects/finance_tracker/finance-tracker/config.txt");
+    private File config = new File("C://Users/user/Desktop/config.txt");
 
     private DBManager() {
         try {
