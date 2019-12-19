@@ -3,6 +3,7 @@ package models;
 import java.time.LocalDateTime;
 
 public class User {
+
     private int id;
     private String firstName;
     private String lastName;

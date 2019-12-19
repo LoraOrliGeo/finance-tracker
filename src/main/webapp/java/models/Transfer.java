@@ -1,6 +1,7 @@
 package models;
 
 public class Transfer {
+
     private int id;
     private Account fromAccount;
     private Account toAccount;

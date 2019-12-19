@@ -3,6 +3,7 @@ package models;
 import java.time.LocalDate;
 
 public class Budget {
+    
     private int id;
     private LocalDate fromDate;
     private LocalDate toDate;

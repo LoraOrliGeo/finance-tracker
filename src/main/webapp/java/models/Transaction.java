@@ -3,6 +3,7 @@ package models;
 import java.time.LocalDateTime;
 
 public class Transaction {
+
     private int id;
     private TransactionType type;
     private Category category;
