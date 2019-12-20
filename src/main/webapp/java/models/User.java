@@ -12,6 +12,8 @@ public class User {
     private LocalDateTime dateCreated;
     private LocalDateTime lastLogin;
 
+    public User(){}
+
     public User(String firstName, String lastName, String password, String email) {
         setFirstName(firstName);
         setLastName(lastName);
