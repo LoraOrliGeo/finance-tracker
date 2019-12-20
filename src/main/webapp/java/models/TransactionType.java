@@ -7,10 +7,10 @@ public class TransactionType {
     }
 
     private int id;
-    private Type type;
+    private Type name;
 
-    public TransactionType(Type type) {
-        this.type = type;
+    public TransactionType(Type name) {
+        this.name = name;
     }
 
     public int getId() {
@@ -21,11 +21,11 @@ public class TransactionType {
         this.id = id;
     }
 
-    public Type getType() {
-        return type;
+    public Type getName() {
+        return name;
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public void setName(Type name) {
+        this.name = name;
     }
 }

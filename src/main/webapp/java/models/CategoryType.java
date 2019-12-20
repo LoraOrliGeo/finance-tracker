@@ -7,10 +7,10 @@ public class CategoryType {
     }
 
     private int id;
-    private Type type;
+    private Type name;
 
-    public CategoryType(Type type) {
-        this.type = type;
+    public CategoryType(Type name) {
+        this.name = name;
     }
 
     public int getId() {
@@ -21,11 +21,11 @@ public class CategoryType {
         this.id = id;
     }
 
-    public Type getType() {
-        return type;
+    public Type getName() {
+        return name;
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public void setName(Type name) {
+        this.name = name;
     }
 }

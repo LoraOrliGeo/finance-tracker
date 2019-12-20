@@ -1,9 +1,13 @@
 package models.db;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfWriter;
 import models.Category;
 import models.Transaction;
 import models.TransactionType;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -175,7 +179,8 @@ public class TransactionDAO {
             statement.setInt(1, id);
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                TransactionType.Type type = TransactionTypeDAO.getInstance().getTransactionTypeById(set.getInt("type_id"));
+                TransactionType.Type type = TransactionTypeDAO.getInstance()
+                        .getTransactionTypeById(set.getInt("type_id"));
                 TransactionType transactionType = new TransactionType(type);
                 Category category = CategoryDAO.getInstance().getCategoryById(set.getInt("category_id"));
                 transaction = new Transaction(transactionType, category, set.getDouble("amount"));
@@ -190,7 +195,29 @@ public class TransactionDAO {
         }
     }
 
-    public void exportTransactionToPDF(Transaction transaction){
-        // TODO
+    public void exportTransactionToPDF(Transaction transaction) {
+        try {
+            Document document = new Document();
+            PdfWriter.getInstance(document, new FileOutputStream("transaction.pdf"));
+            document.open();
+            Font titleFont = FontFactory.getFont(FontFactory.TIMES_BOLDITALIC, 20, BaseColor.BLACK);
+            document.add(new Paragraph("Transaction Information" + System.lineSeparator(), titleFont));
+            Font contentFont = FontFactory.getFont(FontFactory.TIMES_ITALIC, 15, BaseColor.LIGHT_GRAY);
+            document.add(new Chunk(
+                    "Type: " + transaction.getType().getName() + System.lineSeparator(),
+                    contentFont)); // income or expense
+            document.add(new Chunk(
+                    "Category: " + transaction.getCategory().getName() + System.lineSeparator(),
+                    contentFont));
+            document.add(new Chunk("Amount: " + transaction.getAmount() + System.lineSeparator(),
+                    contentFont));
+            document.add(new Chunk("Date: " + transaction.getDate() + System.lineSeparator(),
+                    contentFont));
+            document.close();
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
