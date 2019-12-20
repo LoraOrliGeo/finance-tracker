@@ -30,5 +30,5 @@ out/
 *.ipr
 *.iws
 
-#configuration
+# configuration
 config.txt
