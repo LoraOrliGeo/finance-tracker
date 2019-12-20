@@ -5,6 +5,10 @@ import models.Currency;
 import models.User;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class AccountDAO {
 
@@ -54,8 +58,30 @@ public class AccountDAO {
         return account;
     }
 
-    public void editAccount(int id){
-        //TODO
-            //update query maybe
+    public void editAccount(int id, double balance) throws SQLException {
+        Connection connection = DBManager.getInstance().getConnection();
+        String sql = "UPDATE accounts SET balance = ? WHERE id = " + id;
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setDouble(1, balance);
+        statement.executeUpdate();
+        statement.close();
+    }
+
+    public List<Account> getAllAccounts() throws SQLException {
+        Connection connection = DBManager.getInstance().getConnection();
+        connection.setAutoCommit(false);
+        List<Account> accounts = new ArrayList<>();
+        String sql = "SELECT id FROM accounts;";
+        try ( PreparedStatement statement = connection.prepareStatement(sql);
+              ResultSet set = statement.executeQuery()) {
+            while (set.next()) {
+                accounts.add(getAccountById(set.getInt("id")));
+            }
+            connection.commit();
+            return Collections.unmodifiableList(accounts);
+        } catch (Exception e){
+            connection.rollback();
+            throw new SQLException("Accounts cannot be seen!");
+        }
     }
 }
