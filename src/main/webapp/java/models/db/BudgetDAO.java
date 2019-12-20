@@ -5,6 +5,10 @@ import models.Budget;
 import models.Category;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class BudgetDAO {
 
@@ -55,5 +59,92 @@ public class BudgetDAO {
         set.close();
         statement.close();
         return budget;
+    }
+
+    public void editBudget(int id, String title, double amount, int accountId, int categoryId) throws SQLException {
+        Connection connection = DBManager.getInstance().getConnection();
+        String sql = "UPDATE budgets SET title = ?, amount = ?, account_id = ?, category_id = ? WHERE id = " + id;
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, title);
+        statement.setDouble(2, amount);
+        statement.setInt(3, accountId);
+        statement.setInt(4, categoryId);
+        statement.executeUpdate();
+        statement.close();
+    }
+
+    public List<Budget> getAllBudgets() throws SQLException {
+        Connection connection = DBManager.getInstance().getConnection();
+        connection.setAutoCommit(false);
+        List<Budget> budgets = new ArrayList<>();
+        String sql = "SELECT id FROM budgets;";
+        try ( PreparedStatement statement = connection.prepareStatement(sql);
+              ResultSet set = statement.executeQuery()) {
+            while (set.next()) {
+                budgets.add(getBudgetById(set.getInt("id")));
+            }
+            connection.commit();
+            return Collections.unmodifiableList(budgets);
+        } catch (Exception e){
+            connection.rollback();
+            throw new SQLException("Accounts cannot be seen!");
+        }
+    }
+
+    public List<Budget> getBudgetsByCategory(int categoryId) throws SQLException {
+        Connection connection = DBManager.getInstance().getConnection();
+        connection.setAutoCommit(false);
+        List<Budget> budgets = new ArrayList<>();
+        String sql = "SELECT id FROM budgets WHERE category_id = " + categoryId;
+        try ( PreparedStatement statement = connection.prepareStatement(sql);
+              ResultSet set = statement.executeQuery()) {
+            while (set.next()) {
+                budgets.add(getBudgetById(set.getInt("id")));
+            }
+            connection.commit();
+            return Collections.unmodifiableList(budgets);
+        } catch (Exception e){
+            connection.rollback();
+            throw new SQLException("Accounts cannot be seen!");
+        }
+    }
+
+    public List<Budget> getBudgetsByAccount(int accountId) throws SQLException {
+        Connection connection = DBManager.getInstance().getConnection();
+        connection.setAutoCommit(false);
+        List<Budget> budgets = new ArrayList<>();
+        String sql = "SELECT id FROM budgets WHERE account_id = " + accountId;
+        try ( PreparedStatement statement = connection.prepareStatement(sql);
+              ResultSet set = statement.executeQuery()) {
+            while (set.next()) {
+                budgets.add(getBudgetById(set.getInt("id")));
+            }
+            connection.commit();
+            return Collections.unmodifiableList(budgets);
+        } catch (Exception e){
+            connection.rollback();
+            throw new SQLException("Accounts cannot be seen!");
+        }
+    }
+
+    public List<Budget> getBudgetsByPeriod(LocalDate fromDate, LocalDate toDate) throws SQLException {
+        Connection connection = DBManager.getInstance().getConnection();
+        connection.setAutoCommit(false);
+        List<Budget> budgets = new ArrayList<>();
+        String sql = "SELECT id FROM budgets WHERE from_date = ?, to_date = ?;";
+        try ( PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setDate(1, Date.valueOf(fromDate));
+            statement.setDate(2, Date.valueOf(toDate));
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+                budgets.add(getBudgetById(set.getInt("id")));
+            }
+            connection.commit();
+            set.close();
+            return Collections.unmodifiableList(budgets);
+        } catch (Exception e){
+            connection.rollback();
+            throw new SQLException("Accounts cannot be seen!");
+        }
     }
 }
