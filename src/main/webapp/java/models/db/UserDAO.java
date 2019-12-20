@@ -41,19 +41,39 @@ public class UserDAO {
     }
 
     public void editUser(long id, String[] parameters) throws SQLException {
-        User user = getUserById(id);
         Connection connection = DBManager.getInstance().getConnection();
         String sql = "UPDATE users SET first_name = ?, last_name = ?, password = ? WHERE id = ?";
         PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, parameters[0]);
+        statement.setString(2, parameters[1]);
+        statement.setString(3, parameters[2]);
+        statement.setLong(4, id);
+        statement.executeUpdate();
+        statement.close();
+    }
 
+    public boolean checkUser(String email, String password) throws SQLException {
+        Connection connection = DBManager.getInstance().getConnection();
+        String sql = "SELECT * FROM users WHERE email = ?, password = ?";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, email);
+        statement.setString(2, password);
+        if (statement.executeUpdate() == 0) {
+            statement.close();
+            return false;
+        } else {
+            statement.close();
+            return true;
+        }
     }
 
     public User getUserById(long id) throws SQLException {
         User user = new User();
         Connection connection = DBManager.getInstance().getConnection();
         String sql = "SELECT id, first_name, last_name, password, email, date_created, last_login " +
-                "FROM users WHERE id = " + id;
+                "FROM users WHERE id = ?";
         PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setLong(1, id);
         ResultSet resultSet = statement.executeQuery();
 
         while (resultSet.next()) {
@@ -66,6 +86,7 @@ public class UserDAO {
             user.setLastLogin(resultSet.getTimestamp("last_login").toLocalDateTime());
         }
 
+        statement.close();
         return user;
     }
 
