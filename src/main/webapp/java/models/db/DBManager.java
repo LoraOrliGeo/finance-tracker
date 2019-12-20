@@ -13,7 +13,7 @@ public class DBManager {
     private static DBManager mInstance;
 
     private Connection connection;
-    private File config = new File("C://Users/user/Desktop/config.txt");
+    private File config = new File("C:\\Users\\user\\Desktop\\config.txt");
 
     private DBManager() {
         try {
@@ -25,9 +25,9 @@ public class DBManager {
     }
 
     private Connection createConnection() {
-        try (Scanner scanner = new Scanner(new FileInputStream(config))){
+        try (Scanner scanner = new Scanner(new FileInputStream(config))) {
             String input = "";
-            while(scanner.hasNextLine()){
+            while (scanner.hasNextLine()) {
                 input = scanner.nextLine();
             }
             String[] credentials = input.split(",");
@@ -36,14 +36,14 @@ public class DBManager {
         } catch (SQLException e) {
             System.out.println("Connection failed! " + e.getMessage());
             return null;
-        } catch (FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             System.out.println("Error! Opening the file failed! " + e.getMessage());
             return null;
         }
     }
 
     public Connection getConnection() throws SQLException {
-        if(connection.isClosed()){
+        if (connection == null) {
             connection = createConnection();
         }
         return connection;
