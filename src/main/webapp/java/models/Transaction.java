@@ -28,12 +28,24 @@ public class Transaction {
         return type;
     }
 
+    public void setType(TransactionType type) {
+        this.type = type;
+    }
+
     public Category getCategory() {
         return category;
     }
 
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
     public double getAmount() {
         return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 
     public LocalDateTime getDate() {
