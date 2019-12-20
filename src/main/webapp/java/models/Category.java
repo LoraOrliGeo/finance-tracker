@@ -2,7 +2,7 @@ package models;
 
 public class Category {
 
-    enum CategoryName {
+    public enum CategoryName {
         // general categories
         FOOD_AND_DRINKS, SHOPPING, HOUSING, TRANSPORTATION, VEHICLE, LIFE_AND_ENTERTAINMENT,
         COMMUNICATION_PC, FINANCIAL_EXPENSES, INVESTMENTS, INCOME, OTHERS
@@ -13,6 +13,9 @@ public class Category {
     private CategoryName name;
     private String iconURL;
     private CategoryType type;
+
+    public Category() {
+    }
 
     public Category(CategoryName name, String iconURL, CategoryType type) {
         this.name = name;
@@ -32,11 +35,23 @@ public class Category {
         return name;
     }
 
+    public void setName(CategoryName name) {
+        this.name = name;
+    }
+
     public String getIconURL() {
         return iconURL;
     }
 
+    public void setIconURL(String iconURL) {
+        this.iconURL = iconURL;
+    }
+
     public CategoryType getType() {
         return type;
+    }
+
+    public void setType(CategoryType type) {
+        this.type = type;
     }
 }
