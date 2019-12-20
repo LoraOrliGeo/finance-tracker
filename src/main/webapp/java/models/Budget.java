@@ -10,13 +10,25 @@ public class Budget {
     private Category category;
     private double amount;
     private Account account;
+    private String title;
 
-    public Budget(LocalDate fromDate, LocalDate toDate, Category category, double amount, Account account) {
+    public Budget(String title, LocalDate fromDate, LocalDate toDate, Category category, double amount, Account account) {
+        setTitle(title);
         this.fromDate = fromDate;
         this.toDate = toDate;
         this.category = category;
         this.amount = amount;
         this.account = account;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        if(title != null && !title.isEmpty()){
+            this.title = title;
+        }
     }
 
     public int getId() {
