@@ -84,4 +84,22 @@ public class AccountDAO {
             throw new SQLException("Accounts cannot be seen!");
         }
     }
+
+    public List<Account> getAccountsByOwner(long ownerId) throws SQLException {
+        Connection connection = DBManager.getInstance().getConnection();
+        connection.setAutoCommit(false);
+        List<Account> accounts = new ArrayList<>();
+        String sql = "SELECT id FROM accounts WHERE owner_id = " + ownerId;
+        try ( PreparedStatement statement = connection.prepareStatement(sql);
+              ResultSet set = statement.executeQuery()) {
+            while (set.next()) {
+                accounts.add(getAccountById(set.getInt("id")));
+            }
+            connection.commit();
+            return Collections.unmodifiableList(accounts);
+        } catch (Exception e){
+            connection.rollback();
+            throw new SQLException("Accounts cannot be seen!");
+        }
+    }
 }
