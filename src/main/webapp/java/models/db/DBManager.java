@@ -43,7 +43,7 @@ public class DBManager {
     }
 
     public Connection getConnection() throws SQLException {
-        if (connection == null) {
+        if (connection.isClosed()) {
             connection = createConnection();
         }
         return connection;

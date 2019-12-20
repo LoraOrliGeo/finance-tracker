@@ -14,6 +14,7 @@ public class Account {
         this.user = user;
         this.balance = balance;
         this.currency = currency;
+        this.createdOn = LocalDateTime.now();
     }
 
     public int getId() {
@@ -32,8 +33,8 @@ public class Account {
         return createdOn;
     }
 
-    public void setCreatedOn(LocalDateTime createdOn) {
-        this.createdOn = createdOn;
+    public void setCreatedOn(LocalDateTime dateTime){
+        this.createdOn = dateTime;
     }
 
     public double getBalance() {

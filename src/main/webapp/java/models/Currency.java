@@ -2,7 +2,7 @@ package models;
 
 public class Currency {
 
-    enum CurrencyName {
+    public enum CurrencyName {
         BGN, USD, EUR
     }
 

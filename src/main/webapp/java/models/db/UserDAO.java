@@ -31,12 +31,12 @@ public class UserDAO {
         user.setLastLogin(time);
         statement.setDate(5, Date.valueOf(time.toLocalDate()));
         statement.setDate(6, Date.valueOf(time.toLocalDate()));
-
+        statement.executeUpdate();
         ResultSet generatedKeys = statement.getGeneratedKeys();
+        generatedKeys.next();
         long id = generatedKeys.getLong(1);
         user.setId(id);
 
-        statement.executeUpdate();
         statement.close();
     }
 
@@ -65,7 +65,8 @@ public class UserDAO {
             user.setDateCreated(resultSet.getTimestamp("date_created").toLocalDateTime());
             user.setLastLogin(resultSet.getTimestamp("last_login").toLocalDateTime());
         }
-
+        resultSet.close();
+        statement.close();
         return user;
     }
 
