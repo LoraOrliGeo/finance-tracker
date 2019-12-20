@@ -2,7 +2,7 @@ package models;
 
 public class CategoryType {
 
-    enum Type {
+    public enum Type {
         INCOME, EXPENSE
     }
 
@@ -23,5 +23,9 @@ public class CategoryType {
 
     public Type getType() {
         return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 }
