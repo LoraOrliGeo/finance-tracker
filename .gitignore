@@ -32,3 +32,20 @@ out/
 
 # configuration
 config.txt
+
+# other
+**/target/
+**/generated/
+**/sts-app/target/
+**/sts-app/src/generated/
+**/dependency-reduced-pom.xml
+!.mvn/wrapper/maven-wrapper.jar
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
