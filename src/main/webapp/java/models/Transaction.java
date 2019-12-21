@@ -1,34 +1,42 @@
 package models;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Transaction {
 
     private int id;
-    private TransactionType type;
+    private Type type;
     private Category category;
     private double amount;
     private LocalDateTime date;
+    private int accountId;
 
-    public Transaction(TransactionType type, Category category, double amount) {
+    public Transaction(Type type, Category category, double amount, int accountId) {
         this.type = type;
         this.category = category;
         this.amount = amount;
+        this.date = LocalDateTime.now();
+        this.accountId = accountId;
     }
 
     public int getId() {
         return id;
     }
 
+    public int getAccountId() {
+        return accountId;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
 
-    public TransactionType getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(TransactionType type) {
+    public void setType(Type type) {
         this.type = type;
     }
 

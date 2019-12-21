@@ -4,7 +4,7 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
 import models.Category;
 import models.Transaction;
-import models.TransactionType;
+import models.Type;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -28,13 +28,14 @@ public class TransactionDAO {
 
     public void addTransaction(Transaction transaction) throws SQLException {
         Connection connection = DBManager.getInstance().getConnection();
-        String sql = "INSERT INTO transactions (type_id, category_id, amount, date) " +
-                "VALUES (?,?,?,?)";
-        PreparedStatement statement = connection.prepareStatement(sql);
+        String sql = "INSERT INTO transactions (type_id, category_id, amount, date, account_id) " +
+                "VALUES (?,?,?,?,?)";
+        PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         statement.setInt(1, transaction.getType().getId());
         statement.setInt(2, transaction.getCategory().getType().getId());
         statement.setDouble(3, transaction.getAmount());
         statement.setDate(4, Date.valueOf(transaction.getDate().toLocalDate()));
+        statement.setInt(5, transaction.getAccountId());
         statement.executeUpdate();
         ResultSet keys = statement.getGeneratedKeys();
         keys.next();
@@ -44,7 +45,7 @@ public class TransactionDAO {
         statement.close();
     }
 
-    public void editTransaction(int id, TransactionType type, int categoryId, double amount) throws SQLException {
+    public void editTransaction(int id, Type type, int categoryId, double amount) throws SQLException {
         Connection connection = DBManager.getInstance().getConnection();
         String sql = "UPDATE transactions SET type_id = ?, category_id = ?, amount = ?, date = ? WHERE id = ?";
         PreparedStatement statement = connection.prepareStatement(sql);
@@ -86,7 +87,7 @@ public class TransactionDAO {
         }
     }
 
-    public List<Transaction> getTransactionsByType(TransactionType type) throws SQLException {
+    public List<Transaction> getTransactionsByType(Type type) throws SQLException {
         List<Transaction> transactions = new ArrayList<>();
         Connection connection = DBManager.getInstance().getConnection();
         connection.setAutoCommit(false);
@@ -172,18 +173,17 @@ public class TransactionDAO {
     public Transaction getTransactionById(int id) throws SQLException {
         Connection connection = DBManager.getInstance().getConnection();
         Transaction transaction = null;
-        String sql = "SELECT type_id, category_id, amount, date FROM transactions WHERE id = ?";
+        String sql = "SELECT type_id, category_id, amount, date, account_id FROM transactions WHERE id = ?";
 
         connection.setAutoCommit(false);
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                TransactionType.Type type = TransactionTypeDAO.getInstance()
-                        .getTransactionTypeById(set.getInt("type_id"));
-                TransactionType transactionType = new TransactionType(type);
+                Type type = TypeDAO.getInstance()
+                        .getTypeById(set.getInt("type_id"));
                 Category category = CategoryDAO.getInstance().getCategoryById(set.getInt("category_id"));
-                transaction = new Transaction(transactionType, category, set.getDouble("amount"));
+                transaction = new Transaction(type, category, set.getDouble("amount"), set.getInt("account_id"));
                 transaction.setDate(set.getTimestamp("date").toLocalDateTime());
             }
             connection.commit();
@@ -204,7 +204,7 @@ public class TransactionDAO {
             document.add(new Paragraph("Transaction Information" + System.lineSeparator(), titleFont));
             Font contentFont = FontFactory.getFont(FontFactory.TIMES_ITALIC, 15, BaseColor.LIGHT_GRAY);
             document.add(new Chunk(
-                    "Type: " + transaction.getType().getName() + System.lineSeparator(),
+                    "Type: " + transaction.getType() + System.lineSeparator(),
                     contentFont)); // income or expense
             document.add(new Chunk(
                     "Category: " + transaction.getCategory().getName() + System.lineSeparator(),

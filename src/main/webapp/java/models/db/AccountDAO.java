@@ -24,7 +24,7 @@ public class AccountDAO {
     public void addAccount(Account account) throws SQLException {
         Connection connection = DBManager.getInstance().getConnection();
         String sql = "INSERT INTO accounts (owner_id, created_on, balance, currency_id) VALUES (?,?,?,?);";
-        PreparedStatement statement = connection.prepareStatement(sql);
+        PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         statement.setLong(1, account.getUser().getId());
         statement.setDate(2, Date.valueOf(account.getCreatedOn().toLocalDate()));
         statement.setDouble(3, account.getBalance());
