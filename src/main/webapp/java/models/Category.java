@@ -12,12 +12,12 @@ public class Category {
     private int id;
     private CategoryName name;
     private String iconURL;
-    private CategoryType type;
+    private Type type;
 
     public Category() {
     }
 
-    public Category(CategoryName name, String iconURL, CategoryType type) {
+    public Category(CategoryName name, String iconURL, Type type) {
         this.name = name;
         this.iconURL = iconURL;
         this.type = type;
@@ -47,11 +47,11 @@ public class Category {
         this.iconURL = iconURL;
     }
 
-    public CategoryType getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(CategoryType type) {
+    public void setType(Type type) {
         this.type = type;
     }
 }

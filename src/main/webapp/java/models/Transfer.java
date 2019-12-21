@@ -3,13 +3,13 @@ package models;
 public class Transfer {
 
     private int id;
-    private Account fromAccount;
-    private Account toAccount;
+    private int fromAccountId;
+    private int toAccountId;
     private double amount;
 
-    public Transfer(Account fromAccount, Account toAccount, double amount) {
-        this.fromAccount = fromAccount;
-        this.toAccount = toAccount;
+    public Transfer(int fromAccountId, int toAccountId, double amount) {
+        this.fromAccountId = fromAccountId;
+        this.toAccountId = toAccountId;
         this.amount = amount;
     }
 
@@ -21,12 +21,12 @@ public class Transfer {
         this.id = id;
     }
 
-    public Account getFromAccount() {
-        return fromAccount;
+    public int getFromAccountId() {
+        return fromAccountId;
     }
 
-    public Account getToAccount() {
-        return toAccount;
+    public int getToAccountId() {
+        return toAccountId;
     }
 
     public double getAmount() {

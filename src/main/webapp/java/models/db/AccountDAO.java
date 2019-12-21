@@ -24,7 +24,7 @@ public class AccountDAO {
     public void addAccount(Account account) throws SQLException {
         Connection connection = DBManager.getInstance().getConnection();
         String sql = "INSERT INTO accounts (owner_id, created_on, balance, currency_id) VALUES (?,?,?,?);";
-        PreparedStatement statement = connection.prepareStatement(sql);
+        PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         statement.setLong(1, account.getUser().getId());
         statement.setDate(2, Date.valueOf(account.getCreatedOn().toLocalDate()));
         statement.setDouble(3, account.getBalance());
@@ -40,13 +40,14 @@ public class AccountDAO {
 
     public Account getAccountById(int id) throws SQLException {
         Connection connection = DBManager.getInstance().getConnection();
-        String sql = "SELECT id, owner_id, created_on, balance, currency_id FROM accounts WHERE id = " + id;
+        String sql = "SELECT id, owner_id, created_on, balance, currency_id FROM accounts WHERE id = ?";
         PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setInt(1, id);
         ResultSet set = statement.executeQuery();
         Account account = null;
         User user;
         Currency currency;
-        while(set.next()){
+        while (set.next()) {
             user = UserDAO.getInstance().getUserById(set.getLong("owner_id"));
             currency = CurrencyDAO.getInstance().getCurrencyById(set.getInt("currency_id"));
             account = new Account(user, set.getDouble("balance"), currency);
@@ -60,9 +61,10 @@ public class AccountDAO {
 
     public void editAccount(int id, double balance) throws SQLException {
         Connection connection = DBManager.getInstance().getConnection();
-        String sql = "UPDATE accounts SET balance = ? WHERE id = " + id;
+        String sql = "UPDATE accounts SET balance = ? WHERE id = ?";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setDouble(1, balance);
+        statement.setInt(2, id);
         statement.executeUpdate();
         statement.close();
     }
@@ -72,14 +74,14 @@ public class AccountDAO {
         connection.setAutoCommit(false);
         List<Account> accounts = new ArrayList<>();
         String sql = "SELECT id FROM accounts;";
-        try ( PreparedStatement statement = connection.prepareStatement(sql);
-              ResultSet set = statement.executeQuery()) {
+        try (PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet set = statement.executeQuery()) {
             while (set.next()) {
                 accounts.add(getAccountById(set.getInt("id")));
             }
             connection.commit();
             return Collections.unmodifiableList(accounts);
-        } catch (Exception e){
+        } catch (Exception e) {
             connection.rollback();
             throw new SQLException("Accounts cannot be seen!");
         }
@@ -90,14 +92,14 @@ public class AccountDAO {
         connection.setAutoCommit(false);
         List<Account> accounts = new ArrayList<>();
         String sql = "SELECT id FROM accounts WHERE owner_id = " + ownerId;
-        try ( PreparedStatement statement = connection.prepareStatement(sql);
-              ResultSet set = statement.executeQuery()) {
+        try (PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet set = statement.executeQuery()) {
             while (set.next()) {
                 accounts.add(getAccountById(set.getInt("id")));
             }
             connection.commit();
             return Collections.unmodifiableList(accounts);
-        } catch (Exception e){
+        } catch (Exception e) {
             connection.rollback();
             throw new SQLException("Accounts cannot be seen!");
         }

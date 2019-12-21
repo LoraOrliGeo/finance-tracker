@@ -1,12 +1,9 @@
 package models.db;
 
 import models.Category;
-import models.CategoryType;
+import models.Type;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +20,8 @@ public class CategoryDAO {
 
     public void addCategory(Category category) throws SQLException {
         Connection connection = DBManager.getInstance().getConnection();
-        String sql = "INSERT INTO catgories (name, icon_url, type_id) VALUES (?,?,?)";
-        PreparedStatement statement = connection.prepareStatement(sql);
+        String sql = "INSERT INTO categories (name, icon_url, type_id) VALUES (?,?,?)";
+        PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, category.getName().toString());
         statement.setString(2, category.getIconURL());
         statement.setInt(3, category.getType().getId());
@@ -60,9 +57,8 @@ public class CategoryDAO {
         while (resultSet.next()) {
             category.setName(Category.CategoryName.valueOf(resultSet.getString("name")));
             category.setIconURL(resultSet.getString("icon_url"));
-            CategoryType.Type type = CategoryTypeDAO.getInstance().getCategoryTypeById(resultSet.getInt("type_id"));
-            CategoryType categoryType = new CategoryType(type);
-            category.setType(categoryType);
+            Type type = TypeDAO.getInstance().getTypeById(resultSet.getInt("type_id"));
+            category.setType(type);
         }
         resultSet.close();
         statement.close();

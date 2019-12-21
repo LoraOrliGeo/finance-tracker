@@ -33,7 +33,7 @@ public class BudgetDAO {
         statement.setDate(3, Date.valueOf(budget.getToDate()));
         statement.setInt(4, budget.getCategory().getId());
         statement.setDouble(5, budget.getAmount());
-        statement.setInt(6, budget.getAccount().getId());
+        statement.setInt(6, budget.getAccountId());
         statement.executeUpdate();
         ResultSet keys = statement.getGeneratedKeys();
         keys.next();
@@ -49,11 +49,11 @@ public class BudgetDAO {
         PreparedStatement statement = connection.prepareStatement(sql);
         ResultSet set = statement.executeQuery();
         Budget budget = null;
-        while(set.next()){
+        while (set.next()) {
             Category category = CategoryDAO.getInstance().getCategoryById(set.getInt("category_id"));
             Account account = AccountDAO.getInstance().getAccountById(set.getInt("account_id"));
             budget = new Budget(set.getString("title"), set.getDate("from_date").toLocalDate(),
-                    set.getDate("to_date").toLocalDate(), category, set.getDouble("amount"), account);
+                    set.getDate("to_date").toLocalDate(), category, set.getDouble("amount"), account.getId());
             budget.setId(set.getInt("id"));
         }
         set.close();
@@ -78,14 +78,14 @@ public class BudgetDAO {
         connection.setAutoCommit(false);
         List<Budget> budgets = new ArrayList<>();
         String sql = "SELECT id FROM budgets;";
-        try ( PreparedStatement statement = connection.prepareStatement(sql);
-              ResultSet set = statement.executeQuery()) {
+        try (PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet set = statement.executeQuery()) {
             while (set.next()) {
                 budgets.add(getBudgetById(set.getInt("id")));
             }
             connection.commit();
             return Collections.unmodifiableList(budgets);
-        } catch (Exception e){
+        } catch (Exception e) {
             connection.rollback();
             throw new SQLException("Accounts cannot be seen!");
         }
@@ -96,14 +96,14 @@ public class BudgetDAO {
         connection.setAutoCommit(false);
         List<Budget> budgets = new ArrayList<>();
         String sql = "SELECT id FROM budgets WHERE category_id = " + categoryId;
-        try ( PreparedStatement statement = connection.prepareStatement(sql);
-              ResultSet set = statement.executeQuery()) {
+        try (PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet set = statement.executeQuery()) {
             while (set.next()) {
                 budgets.add(getBudgetById(set.getInt("id")));
             }
             connection.commit();
             return Collections.unmodifiableList(budgets);
-        } catch (Exception e){
+        } catch (Exception e) {
             connection.rollback();
             throw new SQLException("Accounts cannot be seen!");
         }
@@ -114,14 +114,14 @@ public class BudgetDAO {
         connection.setAutoCommit(false);
         List<Budget> budgets = new ArrayList<>();
         String sql = "SELECT id FROM budgets WHERE account_id = " + accountId;
-        try ( PreparedStatement statement = connection.prepareStatement(sql);
-              ResultSet set = statement.executeQuery()) {
+        try (PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet set = statement.executeQuery()) {
             while (set.next()) {
                 budgets.add(getBudgetById(set.getInt("id")));
             }
             connection.commit();
             return Collections.unmodifiableList(budgets);
-        } catch (Exception e){
+        } catch (Exception e) {
             connection.rollback();
             throw new SQLException("Accounts cannot be seen!");
         }
@@ -132,7 +132,7 @@ public class BudgetDAO {
         connection.setAutoCommit(false);
         List<Budget> budgets = new ArrayList<>();
         String sql = "SELECT id FROM budgets WHERE from_date = ?, to_date = ?;";
-        try ( PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setDate(1, Date.valueOf(fromDate));
             statement.setDate(2, Date.valueOf(toDate));
             ResultSet set = statement.executeQuery();
@@ -142,7 +142,7 @@ public class BudgetDAO {
             connection.commit();
             set.close();
             return Collections.unmodifiableList(budgets);
-        } catch (Exception e){
+        } catch (Exception e) {
             connection.rollback();
             throw new SQLException("Accounts cannot be seen!");
         }

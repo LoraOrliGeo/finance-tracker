@@ -3,22 +3,22 @@ package models;
 import java.time.LocalDate;
 
 public class Budget {
-    
+
     private int id;
     private LocalDate fromDate;
     private LocalDate toDate;
     private Category category;
     private double amount;
-    private Account account;
+    private int accountId;
     private String title;
 
-    public Budget(String title, LocalDate fromDate, LocalDate toDate, Category category, double amount, Account account) {
+    public Budget(String title, LocalDate fromDate, LocalDate toDate, Category category, double amount, int accountId) {
         setTitle(title);
         this.fromDate = fromDate;
         this.toDate = toDate;
         this.category = category;
         this.amount = amount;
-        this.account = account;
+        this.accountId = accountId;
     }
 
     public String getTitle() {
@@ -26,7 +26,7 @@ public class Budget {
     }
 
     public void setTitle(String title) {
-        if(title != null && !title.isEmpty()){
+        if (title != null && !title.isEmpty()) {
             this.title = title;
         }
     }
@@ -55,7 +55,7 @@ public class Budget {
         return amount;
     }
 
-    public Account getAccount() {
-        return account;
+    public int getAccountId() {
+        return accountId;
     }
 }

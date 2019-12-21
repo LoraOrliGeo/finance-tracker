@@ -2,10 +2,7 @@ package models.db;
 
 import models.Currency;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class CurrencyDAO {
 
@@ -24,7 +21,7 @@ public class CurrencyDAO {
     public void addCurrency(Currency currency) throws SQLException {
         Connection connection = DBManager.getInstance().getConnection();
         String sql = "INSERT INTO currencies (name) VALUES (?);";
-        PreparedStatement statement = connection.prepareStatement(sql);
+        PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, currency.getName().toString());
         statement.executeUpdate();
         ResultSet keys = statement.getGeneratedKeys();
