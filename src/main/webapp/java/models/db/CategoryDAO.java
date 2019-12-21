@@ -69,16 +69,22 @@ public class CategoryDAO {
         return category;
     }
 
-    public List<String> getIcons(Category.CategoryName name) {
+    public List<String> getIcons(int categoryId) throws SQLException {
         List<String> iconsForCategory = new ArrayList<>();
-        // TODO
-        // another table with name of category (groceries, shopping, etc) with its available icon urls ?
-        // String sql = "SELECT icon_url FROM another_table WHERE category_name = name"
-        // PrepareStatement statement = connection.prepareStatement(sql);
-        // ResultSet set = statement.executeQuery();
-        // while (set.next()) {
-        // iconsForCategory.add(set.getString(icon_url));
-        // }
-        return iconsForCategory;
+        Connection connection = DBManager.getInstance().getConnection();
+        connection.setAutoCommit(false);
+        String sql = "SELECT url FROM icons WHERE category_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet set = statement.executeQuery()) {
+            statement.setInt(1, categoryId);
+            while (set.next()) {
+                iconsForCategory.add(set.getString("url"));
+            }
+            return iconsForCategory;
+        } catch (Exception e) {
+            connection.rollback();
+            connection.setAutoCommit(true);
+            throw new SQLException("Get icons for category cannot be proceed!");
+        }
     }
 }
