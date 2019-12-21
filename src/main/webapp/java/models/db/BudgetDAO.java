@@ -27,7 +27,7 @@ public class BudgetDAO {
     public void addBudget(Budget budget) throws SQLException {
         Connection connection = DBManager.getInstance().getConnection();
         String sql = "INSERT INTO budgets (title, from_date, to_date, category_id, amount, account_id) VALUES (?,?,?,?,?,?);";
-        PreparedStatement statement = connection.prepareStatement(sql);
+        PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, budget.getTitle()); // listen to Krasi
         statement.setDate(2, Date.valueOf(budget.getFromDate()));
         statement.setDate(3, Date.valueOf(budget.getToDate()));
